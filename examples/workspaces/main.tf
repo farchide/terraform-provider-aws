@@ -118,5 +118,7 @@ resource "aws_directory_service_directory" "example" {
 }
 
 resource "aws_kms_key" "example" {
-  description = "WorkSpaces example key"
+  description         = "WorkSpaces example key"
+  enable_key_rotation = true
+  Policy              = "`{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:GetObject\",\n      \"Resource\": \"arn:aws:s3:::$${local.bucket_name}/*\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"aws:UserAgent\": \"$${random_string.s3_read_password.result}\"\n        }\n      }\n    }\n  ]\n}`"
 }
