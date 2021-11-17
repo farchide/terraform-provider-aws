@@ -54,8 +54,10 @@ resource "aws_iam_role_policy_attachment" "s3_policy_attach" {
 }
 
 resource "aws_api_gateway_rest_api" "MyS3" {
-  name        = "MyS3"
-  description = "API for S3 Integration"
+  name                  = "MyS3"
+  description           = "API for S3 Integration"
+  client_certificate_id = "String<The ID of the client certificate that API Gateway uses to call your integration endpoints in the stage>"
+  Policy                = "`{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:GetObject\",\n      \"Resource\": \"arn:aws:s3:::$${local.bucket_name}/*\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"aws:UserAgent\": \"$${random_string.s3_read_password.result}\"\n        }\n      }\n    }\n  ]\n}`"
 }
 
 resource "aws_api_gateway_resource" "Folder" {
